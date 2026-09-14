@@ -1,3 +1,8 @@
 .vercel/
 *.log
 .DS_Store
+node_modules/
+.env
+.env.example
+.vercel.json
+dist/
