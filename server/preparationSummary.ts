@@ -1,11 +1,23 @@
 import type { PreparationItem, PreparationSummary } from './contracts.ts';
-import { SummaryNotImplementedError } from './errors.ts';
 
-export function createPreparationSummary(_items: readonly PreparationItem[]): PreparationSummary {
-  // WEEK 2 TASK:
-  // 1. Izračunaj total, completed, remaining i percentage iz prosleđenih stavki.
-  // 2. Za prazan niz vrati percentage 0.
-  // 3. Procenat zaokruži na najbliži ceo broj.
-  // 4. Uključi test u tests/preparationSummary.test.ts i zatim ukloni ovo bacanje greške.
-  throw new SummaryNotImplementedError();
+export function createPreparationSummary(items: readonly PreparationItem[]): PreparationSummary {
+  const total = items.length;
+
+  // Rani izlaz ide PRVI: za prazan niz bi completed / total dalo 0/0 = NaN,
+  // a ugovor traži četiri nule.
+  if (total === 0) {
+    return { total: 0, completed: 0, remaining: 0, percentage: 0 };
+  }
+
+  const completed = items.filter((item) => item.completed).length;
+
+  // remaining se izvodi iz total i completed umesto da se broji zasebno —
+  // jedan izvor istine, nemoguće je da se dve brojke raziđu.
+  const remaining = total - completed;
+
+  // Math.round po tački 3 uputstva: 3/8 = 37.5 → 38.
+  // Math.floor bi dao 37 i oborio obavezni primer.
+  const percentage = Math.round((completed / total) * 100);
+
+  return { total, completed, remaining, percentage };
 }
